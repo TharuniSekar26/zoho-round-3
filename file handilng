@@ -1,0 +1,154 @@
+public class Node {
+    private String name;
+    private boolean isDirectory;
+    private Node parent;
+    private List<Node> children;
+
+    // Constructor and getters/setters
+}
+
+======================================
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class InMemoryFileSystem {
+    private Node root;
+
+    public InMemoryFileSystem() {
+        root = new Node("/", true);
+    }
+
+    public void createDirectory(String path) {
+        Node parent = getNode(getParentPath(path));
+        if (parent == null) {
+            throw new IllegalArgumentException("Parent directory not found");
+        }
+
+        Node newNode = new Node(getLastPathComponent(path), true);
+        parent.getChildren().add(newNode);
+        newNode.setParent(parent);
+    }
+
+    public void listDirectory(String path) {
+        Node node = getNode(path);
+        if (node == null) {
+            throw new IllegalArgumentException("Directory not found");
+        }
+
+        if (node.isDirectory()) {
+            for (Node child : node.getChildren()) {
+                System.out.println(child.getName() + (child.isDirectory() ? "/" : ""));
+            }
+        } else {
+            throw new IllegalArgumentException("Path is not a directory");
+        }
+    }
+
+    public void deleteDirectory(String path) {
+    Node node = getNode(path);
+    if (node == null) {
+        throw new IllegalArgumentException("Directory not found");
+    }
+    node.getParent().getChildren().remove(node);
+}
+
+public void renameDirectory(String oldPath, String newPath) {
+    Node node = getNode(oldPath);
+    if (node == null) {
+        throw new IllegalArgumentException("Directory not found");
+    }
+    node.setName(getLastPathComponent(newPath));
+}
+
+public void createFile(String path) {
+    Node parent = getNode(getParentPath(path));
+    if (parent == null) {
+        throw new IllegalArgumentException("Parent directory not found");
+    }
+
+    Node newNode = new Node(getLastPathComponent(path), false);
+    parent.getChildren().add(newNode);
+    newNode.setParent(parent);
+}
+
+public void listFiles(String path) {
+    Node node = getNode(path);
+    if (node == null) {
+        throw new IllegalArgumentException("Directory not found");
+    }
+
+    if (node.isDirectory()) {
+        for (Node child : node.getChildren()) {
+            if (!child.isDirectory()) {
+                System.out.println(child.getName());
+            }
+        }
+    } else {
+        throw new IllegalArgumentException("Path is not a directory");
+    }
+}
+
+public void updateFile(String path, String content) {
+    Node node = getNode(path);
+    if (node == null || node.isDirectory()) {
+        throw new IllegalArgumentException("File not found or path is a directory");
+    }
+    // Implement file content storage and update logic here
+    // For simplicity, let's assume a basic string-based content:
+    node.setContent(content);
+}
+
+public void deleteFile(String path) {
+    Node node = getNode(path);
+    if (node == null) {
+        throw new IllegalArgumentException("File not found");
+    }
+    node.getParent().getChildren().remove(node);
+}
+
+public void renameFile(String oldPath, String newPath) {
+    Node node = getNode(oldPath);
+    if (node == null) {
+        throw new IllegalArgumentException("File not found");
+    }
+    node.setName(getLastPathComponent(newPath));
+}
+
+// Implement restore functionality, potentially using a list of deleted nodes
+public void restoreFile(String path) {
+    // ...
+}
+    private Node getNode(String path) {
+        Node current = root;
+        String[] components = path.split("/");
+        for (String component : components) {
+            if (component.isEmpty()) {
+                continue;
+            }
+            Node child = null;
+            for (Node c : current.getChildren()) {
+                if (c.getName().equals(component)) {
+                    child = c;
+                    break;
+                }
+            }
+            if (child == null) {
+                return null;
+            }
+            current = child;
+        }
+        return current;
+    }
+
+    private String getParentPath(String path) {
+        int lastSlashIndex = path.lastIndexOf("/");
+        return lastSlashIndex == -1 ? "/" : path.substring(0, lastSlashIndex);
+    }
+
+    private String getLastPathComponent(String path) {
+        int lastSlashIndex = path.lastIndexOf("/");
+        return lastSlashIndex == -1 ? path : path.substring(lastSlashIndex + 1);
+    }
+}
