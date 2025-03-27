@@ -1,0 +1,122 @@
+8.Employee Payroll System (Abstraction & Polymorphism)
+Problem Statement:
+Develop an Employee Payroll System where employees have
+different salary structures. Use abstraction to define common
+attributes and polymorphism to calculate salary differently for
+full-time and part-time employees.
+Requirements:
+Abstract Class: Employee
+Attributes: name, id, basicSalary
+Methods:
+calculateSalary(), displayDetails()
+Subclasses:
+FullTimeEmployee → Salary = basicSalary + benefits
+PartTimeEmployee → Salary = hourlyRate * hoursWorked
+
+===================================================================
+
+
+import java.util.Scanner;
+
+// Abstract class Employee
+abstract class Employee {
+    String name;
+    int id;
+    double basicSalary;
+
+    public Employee(String name, int id, double basicSalary) {
+        this.name = name;
+        this.id = id;
+        this.basicSalary = basicSalary;
+    }
+
+    // Abstract method to calculate salary (Polymorphism)
+    public abstract double calculateSalary();
+
+    // Method to display employee details
+    public void displayDetails() {
+        System.out.println("Employee Details:");
+        System.out.println("Name: " + name);
+        System.out.println("ID: " + id);
+    }
+}
+
+// Subclass FullTimeEmployee
+class FullTimeEmployee extends Employee {
+    double benefits;
+
+    public FullTimeEmployee(String name, int id, double basicSalary, double benefits) {
+        super(name, id, basicSalary);
+        this.benefits = benefits;
+    }
+
+    @Override
+    public double calculateSalary() {
+        return basicSalary + benefits;
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Salary: $" + calculateSalary());
+    }
+}
+
+// Subclass PartTimeEmployee
+class PartTimeEmployee extends Employee {
+    double hourlyRate;
+    int hoursWorked;
+
+    public PartTimeEmployee(String name, int id, double hourlyRate, int hoursWorked) {
+        super(name, id, 0); // basicSalary is not used for part-time
+        this.hourlyRate = hourlyRate;
+        this.hoursWorked = hoursWorked;
+    }
+
+    @Override
+    public double calculateSalary() {
+        return hourlyRate * hoursWorked;
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Salary: $" + calculateSalary());
+    }
+}
+
+public class EmployeePayrollSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter Employee Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter Employee ID: ");
+        int id = scanner.nextInt();
+
+        System.out.print("Enter Salary Type (1 for Full-Time, 2 for Part-Time): ");
+        int salaryType = scanner.nextInt();
+
+        Employee employee;
+
+        if (salaryType == 1) {
+            System.out.print("Enter Basic Salary: ");
+            double basicSalary = scanner.nextDouble();
+            System.out.print("Enter Benefits: ");
+            double benefits = scanner.nextDouble();
+            employee = new FullTimeEmployee(name, id, basicSalary, benefits);
+        } else if (salaryType == 2) {
+            System.out.print("Enter Hourly Rate: ");
+            double hourlyRate = scanner.nextDouble();
+            System.out.print("Enter Hours Worked: ");
+            int hoursWorked = scanner.nextInt();
+            employee = new PartTimeEmployee(name, id, hourlyRate, hoursWorked);
+        } else {
+            System.out.println("Invalid Salary Type.");
+            return;
+        }
+
+        employee.displayDetails();
+    }
+}
