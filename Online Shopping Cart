@@ -1,0 +1,171 @@
+9.Online Shopping Cart (Encapsulation & Inheritance)
+
+Problem Statement:
+
+Build an Online Shopping Cart System where users can add items
+
+of different types. Use encapsulation to protect item details and
+
+inheritance to define product categories.
+
+Requirements:
+
+Base Class: Product
+
+Attributes: name, price, quantity
+
+Methods: calculateTotalPrice(), displayProductDetails()
+
+Subclasses:
+
+Electronics → Additional warranty fee applies.
+
+Clothing → Discount applies based on the quantity.
+
+
+
+Sample Input:
+
+Enter product name: "Laptop"
+
+Enter price: $1000
+
+Enter quantity: 1
+
+Select category (1 for Electronics, 2 for Clothing): 1
+
+Sample Output:
+
+Product: Laptop
+
+Category: Electronics
+
+Total Price: $1050 (including warranty fee) 
+
+=======================================================================
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Base class Product
+class Product {
+    private String name;
+    private double price;
+    private int quantity;
+
+    public Product(String name, double price, int quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double calculateTotalPrice() {
+        return price * quantity;
+    }
+
+    public void displayProductDetails() {
+        System.out.println("Product: " + name);
+        System.out.println("Total Price: $" + calculateTotalPrice());
+    }
+}
+
+// Subclass Electronics
+class Electronics extends Product {
+    private double warrantyFee = 50.0;
+
+    public Electronics(String name, double price, int quantity) {
+        super(name, price, quantity);
+    }
+
+    @Override
+    public double calculateTotalPrice() {
+        return super.calculateTotalPrice() + warrantyFee;
+    }
+
+    @Override
+    public void displayProductDetails() {
+        System.out.println("Category: Electronics");
+        super.displayProductDetails();
+        System.out.println("(including warranty fee)");
+    }
+}
+
+// Subclass Clothing
+class Clothing extends Product {
+    private double discountPercentage = 0.1; // 10% discount
+
+    public Clothing(String name, double price, int quantity) {
+        super(name, price, quantity);
+    }
+
+    @Override
+    public double calculateTotalPrice() {
+        double totalPrice = super.calculateTotalPrice();
+        if (getQuantity() > 2) {
+            totalPrice -= totalPrice * discountPercentage;
+        }
+        return totalPrice;
+    }
+
+    @Override
+    public void displayProductDetails() {
+        System.out.println("Category: Clothing");
+        super.displayProductDetails();
+        if (getQuantity() > 2) {
+            System.out.println("(discount applied)");
+        }
+    }
+}
+
+public class OnlineShoppingCart {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Product> cart = new ArrayList<>();
+
+        System.out.print("Enter product name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter price: $");
+        double price = scanner.nextDouble();
+
+        System.out.print("Enter quantity: ");
+        int quantity = scanner.nextInt();
+
+        System.out.print("Select category (1 for Electronics, 2 for Clothing): ");
+        int category = scanner.nextInt();
+
+        Product product;
+        if (category == 1) {
+            product = new Electronics(name, price, quantity);
+        } else if (category == 2) {
+            product = new Clothing(name, price, quantity);
+        } else {
+            System.out.println("Invalid category.");
+            return;
+        }
+
+        cart.add(product);
+
+        System.out.println("\n--- Shopping Cart ---");
+        for (Product p : cart) {
+            p.displayProductDetails();
+            System.out.println("---------------------");
+        }
+
+        scanner.close();
+    }
+}
