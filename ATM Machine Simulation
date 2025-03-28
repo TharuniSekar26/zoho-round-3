@@ -1,0 +1,92 @@
+15. Bank Account System using Encapsulation
+Problem Statement:
+You are developing a Bank Account System where each account
+has an account holder name, account number, balance, and PIN.
+Use Encapsulation by making all variables private.
+Initialize these variables using a constructor.
+Provide getter methods to retrieve account details except for PIN
+(PIN should not be exposed).
+Implement methods for deposit and withdrawal, but allow
+withdrawal only if the correct PIN is entered.
+Create an Account object, display details, attempt withdrawal
+with the wrong PIN, then with the correct PIN, and display the
+updated details.
+==============================================================
+
+import java.util.Scanner;
+
+class BankAccount {
+    private String accountHolderName;
+    private String accountNumber;
+    private double balance;
+    private int pin;
+
+    public BankAccount(String accountHolderName, String accountNumber, double balance, int pin) {
+        this.accountHolderName = accountHolderName;
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.pin = pin;
+    }
+
+    public String getAccountHolderName() {
+        return accountHolderName;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("$" + amount + " deposited successfully.");
+        } else {
+            System.out.println("Invalid deposit amount.");
+        }
+    }
+
+    public void withdraw(double amount, int enteredPin) {
+        if (enteredPin == pin) {
+            if (balance >= amount && amount > 0) {
+                balance -= amount;
+                System.out.println("$" + amount + " withdrawn successfully.");
+            } else if (amount <= 0){
+                System.out.println("Invalid withdrawal amount.");
+            }else{
+                System.out.println("Insufficient funds.");
+            }
+        } else {
+            System.out.println("Incorrect PIN.");
+        }
+    }
+
+    public void displayAccountDetails() {
+        System.out.println("Account Holder Name: " + accountHolderName);
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Balance: $" + balance);
+    }
+}
+
+public class BankAccountSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        BankAccount account = new BankAccount("John Doe", "123456789", 1000.0, 1234);
+
+        System.out.println("--- Account Details ---");
+        account.displayAccountDetails();
+
+        System.out.println("\n--- Attempt Withdrawal (Wrong PIN) ---");
+        account.withdraw(500.0, 5678);
+
+        System.out.println("\n--- Attempt Withdrawal (Correct PIN) ---");
+        account.withdraw(500.0, 1234);
+
+        System.out.println("\n--- Updated Account Details ---");
+        account.displayAccountDetails();
+    }
+}
