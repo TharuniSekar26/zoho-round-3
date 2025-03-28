@@ -1,0 +1,150 @@
+Problem Statement: Employee Salary Management System
+
+Design a Java Employee Salary Management System using Object-Oriented Programming (OOP) principles. The system should allow adding employees, computing their salaries based on their job roles, and displaying employee details.
+
+
+
+Your program must include the following:
+
+
+
+Base Class (Employee)
+
+
+
+Attributes: name, employeeId, basicSalary
+
+Method: calculateSalary() (to be overridden)
+
+Derived Classes
+
+
+
+Manager (inherits Employee)
+
+Salary calculation: basicSalary + (20% of basicSalary as bonus)
+
+Developer (inherits Employee)
+
+Salary calculation: basicSalary + (10% of basicSalary as bonus)
+
+Intern (inherits Employee)
+
+Salary calculation: basicSalary (no bonus)
+
+Functionality
+
+
+
+Accept employee details (name, employeeId, basicSalary, role)
+
+Compute salary based on role
+
+Display employee details along with computed salary
+
+Constraints
+
+1 ≤ basicSalary ≤ 1,00,000
+
+employeeId is a unique positive integer.
+
+name consists of only uppercase and lowercase letters (1 to 30 characters).
+
+role must be either "Manager", "Developer", or "Intern".
+
+
+
+================================================================================
+ 
+
+import java.util.Scanner;
+
+abstract class Employee {
+    String name;
+    int employeeId;
+    double basicSalary;
+
+    public Employee(String name, int employeeId, double basicSalary) {
+        this.name = name;
+        this.employeeId = employeeId;
+        this.basicSalary = basicSalary;
+    }
+
+    public abstract double calculateSalary();
+
+    public void displayDetails() {
+        System.out.println("Employee ID: " + employeeId);
+        System.out.println("Name: " + name);
+        System.out.println("Basic Salary: " + basicSalary);
+        System.out.println("Total Salary: " + calculateSalary());
+    }
+}
+
+class Manager extends Employee {
+    public Manager(String name, int employeeId, double basicSalary) {
+        super(name, employeeId, basicSalary);
+    }
+
+    @Override
+    public double calculateSalary() {
+        return basicSalary + (0.20 * basicSalary);
+    }
+}
+
+class Developer extends Employee {
+    public Developer(String name, int employeeId, double basicSalary) {
+        super(name, employeeId, basicSalary);
+    }
+
+    @Override
+    public double calculateSalary() {
+        return basicSalary + (0.10 * basicSalary);
+    }
+}
+
+class Intern extends Employee {
+    public Intern(String name, int employeeId, double basicSalary) {
+        super(name, employeeId, basicSalary);
+    }
+
+    @Override
+    public double calculateSalary() {
+        return basicSalary;
+    }
+}
+
+public class EmployeeSalaryManagementSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter Employee Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter Employee ID: ");
+        int employeeId = scanner.nextInt();
+
+        System.out.print("Enter Basic Salary: ");
+        double basicSalary = scanner.nextDouble();
+
+        scanner.nextLine(); // Consume newline
+
+        System.out.print("Enter Employee Role (Manager, Developer, Intern): ");
+        String role = scanner.nextLine();
+
+        Employee employee;
+
+        if (role.equalsIgnoreCase("Manager")) {
+            employee = new Manager(name, employeeId, basicSalary);
+        } else if (role.equalsIgnoreCase("Developer")) {
+            employee = new Developer(name, employeeId, basicSalary);
+        } else if (role.equalsIgnoreCase("Intern")) {
+            employee = new Intern(name, employeeId, basicSalary);
+        } else {
+            System.out.println("Invalid Role.");
+            return;
+        }
+
+        employee.displayDetails();
+        scanner.close();
+    }
+}
